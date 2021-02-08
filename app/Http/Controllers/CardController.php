@@ -21,6 +21,7 @@ class CardController extends Controller
             $response="";
             $card = new Card();
 
+
             $card->name = $data->card_name;
             $card->description = $data->card_description;
 
@@ -110,27 +111,37 @@ class CardController extends Controller
         $data = json_decode($data);
 
         if ($data) {
-            $response=[];
-            
             echo "Datos validos...\n";
             
+            $response=[];                       
 
             $cards = Card::where('name',$data->card_name)->get();
-            echo("Obtiene todas las cartas de la base de datos...\n");
 
-            for ($i=0; $i <count($cards) ; $i++) {
-                echo("Añade la carta ${i} al json\n"); 
-                $response[$i] = [
-                    "Card_id" => $cards[$i]->id,
-                    "Card name" => $cards[$i]->name,
-                    "Admin_id" => $cards[$i]->admin->id,				
-                    "Admin username" => $cards[$i]->admin->username                    				
-                ];
-                for ($j=0; $j < count($cards[$i]->collection); $j++) {
-                    echo("Añade la coleccion ${j} al json\n"); 
-                    $response[$i][$j]["Collection name"] = $cards[$i]->collection[$j]->name;                    
+            if (!empty($cards)) {
+
+                echo "Obtiene todas las cartas de la base de datos con el nombre " . $data->card_name . "\n";
+
+                for ($i=0; $i <count($cards) ; $i++) {
+                    
+                    echo "Añade al JSON la carta " . $cards[$i]->id ." al json\n";
+
+                    $response[$i] = [
+                        "Card_id" => $cards[$i]->id,
+                        "Card name" => $cards[$i]->name,
+                        "Admin_id" => $cards[$i]->admin->id,				
+                        "Admin username" => $cards[$i]->admin->username                    				
+                    ];
+
+                    for ($j=0; $j < count($cards[$i]->collection); $j++) {
+
+                        echo("Añade al JSON la coleccion ". $cards[$i]->collection[$j]->id ." de la carta ". $cards[$i]->id ."\n"); 
+
+                        $response[$i][$j]["Collection name"] = $cards[$i]->collection[$j]->name;                    
+                    }
                 }
-            }
+            }else{
+                echo("No hay cartas disponibles con ese nombre...\n");
+            }           
         } 
         return response()->json($response);
     }
