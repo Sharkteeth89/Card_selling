@@ -111,10 +111,15 @@ class CardController extends Controller
 
         if ($data) {
             $response=[];
+            
+            echo "Datos validos...\n";
+            
 
             $cards = Card::where('name',$data->card_name)->get();
+            echo("Obtiene todas las cartas de la base de datos...\n");
 
-            for ($i=0; $i <count($cards) ; $i++) { 
+            for ($i=0; $i <count($cards) ; $i++) {
+                echo("Añade la carta ${i} al json\n"); 
                 $response[$i] = [
                     "Card_id" => $cards[$i]->id,
                     "Card name" => $cards[$i]->name,
@@ -122,6 +127,7 @@ class CardController extends Controller
                     "Admin username" => $cards[$i]->admin->username                    				
                 ];
                 for ($j=0; $j < count($cards[$i]->collection); $j++) {
+                    echo("Añade la coleccion ${j} al json\n"); 
                     $response[$i][$j]["Collection name"] = $cards[$i]->collection[$j]->name;                    
                 }
             }
