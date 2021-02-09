@@ -110,10 +110,12 @@ class CardController extends Controller
 
         $data = json_decode($data);
 
-        if ($data) {
+        $response=[];  
+
+        if (isset($data->card_name)) {
             echo "Datos validos...\n";
             
-            $response=[];                       
+                                 
 
             $cards = Card::where('name',$data->card_name)->get();
             
@@ -141,7 +143,11 @@ class CardController extends Controller
                 }
             }else{
                 echo("No hay cartas disponibles con ese nombre...\n");
+                $response = "No cards";
             }           
+        }else{
+            echo "Datos no validos\n";
+            $response = "No data";
         } 
         return response()->json($response);
     }
