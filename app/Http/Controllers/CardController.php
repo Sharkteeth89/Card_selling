@@ -116,13 +116,13 @@ class CardController extends Controller
             $response=[];                       
 
             $cards = Card::where('name',$data->card_name)->get();
-
-            if (!empty($cards)) {
+            
+            if (!$cards->isEmpty()){
 
                 echo "Obtiene todas las cartas de la base de datos con el nombre " . $data->card_name . "\n";
 
                 for ($i=0; $i <count($cards) ; $i++) {
-                    
+
                     echo "Añade al JSON la carta " . $cards[$i]->id ." al json\n";
 
                     $response[$i] = [
