@@ -113,9 +113,7 @@ class CardController extends Controller
         $response=[];  
 
         if (isset($data->card_name)) {
-            echo "Datos validos...\n";
-            
-                                 
+            echo "Datos validos...\n";                                 
 
             $cards = Card::where('name',$data->card_name)->get();
             
