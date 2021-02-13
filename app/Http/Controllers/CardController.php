@@ -112,40 +112,53 @@ class CardController extends Controller
 
         $response=[];  
 
-        if (isset($data->card_name)) {
-            echo "Datos validos...\n";                                 
+        if (isset($data->card_name)) {                              
 
             $cards = Card::where('name',$data->card_name)->get();
             
             if (!$cards->isEmpty()){
 
-                echo "Obtiene todas las cartas de la base de datos con el nombre " . $data->card_name . "\n";
+               
 
                 for ($i=0; $i <count($cards) ; $i++) {
 
-                    echo "Añade al JSON la carta " . $cards[$i]->id ." al json\n";
+                   
 
                     $response[$i] = [
-                        "Card_id" => $cards[$i]->id,
-                        "Card name" => $cards[$i]->name,
-                        "Admin_id" => $cards[$i]->admin->id,				
-                        "Admin username" => $cards[$i]->admin->username                    				
+                        "id" => $cards[$i]->id,
+                        "name" => $cards[$i]->name,
+                        "description" => $cards[$i]->description,				               				
                     ];
 
                     for ($j=0; $j < count($cards[$i]->collection); $j++) {
 
-                        echo("Añade al JSON la coleccion ". $cards[$i]->collection[$j]->id ." de la carta ". $cards[$i]->id ."\n"); 
-
-                        $response[$i][$j]["Collection name"] = $cards[$i]->collection[$j]->name;                    
+                        //$response[$i][$j]["Collection name"] = $cards[$i]->collection[$j]->name;                    
                     }
                 }
             }else{
-                echo("No hay cartas disponibles con ese nombre...\n");
+               
                 $response = "No cards";
             }           
         }else{
-            echo "Datos no validos\n";
+            
             $response = "No data";
+        } 
+        return response()->json($response);
+    }
+
+    public function get_card_by_ID($id){
+        $response;  
+
+        $card = Card::where('id', $id)->get()->first();
+
+        if ($card) {
+            $response = [
+                "id" => $card->id,
+                "name" => $card->name,
+                "description" => $card->description,				               				
+            ];                    
+        }else{            
+            $response = "No Card";
         } 
         return response()->json($response);
     }
