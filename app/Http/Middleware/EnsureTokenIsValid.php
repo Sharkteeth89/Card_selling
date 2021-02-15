@@ -18,26 +18,32 @@ class EnsureTokenIsValid
      */
     public function handle(Request $request, Closure $next)
     {
-        $data = $request->getContent();
+        define("ADMIN","Administrator");
+        
+        $key = MyJWT::getKey();
 
-        $data = json_decode($data);
+        $headers = getallheaders();
 
-        if ($data) {
+        if(array_key_exists('api_token', $headers)){
 
-            $user =  User::where('user_token',$data->user_token)->get()->first();
-
-            if ($user) {
-
-                if ($user->role === "admin"){
-                    return $next($request);
+            if(!empty($headers['api_token'])){
+                $decoded = JWT::decode($headers['api_token'], $key, array('HS256'));
+                
+                if(isset($decoded->role)){
+                    if($decoded->role === ADMIN){
+                        return $next($request);
+                    }else{
+                        abort(403, "¡Usted no está permitido aquí!");
+                    }
                 }else{
-                    abort(403, "Not authorized");                   
-                }                
+                    abort(403, "Token no válido");
+
+                }
             }else{
-                abort(403, "User not found or not logged in");
+                abort(403, "¡Token vacío!");
             }
         }else{
-            abort(403, "Invalid Data");
-        }         
+            abort(403, "¡No has pasado token!");
+        }
     }
 }

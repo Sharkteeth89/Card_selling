@@ -15,19 +15,21 @@ class CardController extends Controller
 
         $data = $request->getContent();
 
-        $data = json_decode($data);
+        $data = json_decode($data);       
 
         if ($data) {
+
+            $key = MyJWT::getKey();
+		    $headers = getallheaders();
+		    $decoded = JWT::decode($headers['api_token'], $key, array('HS256'));
+
             $response="";
             $card = new Card();
 
 
             $card->name = $data->card_name;
             $card->description = $data->card_description;
-
-            $admin = User::where('user_token',$data->user_token)->get()->first();
-
-            $card->admin_id = $admin->id;
+            $card->admin_id = $decoded->id;
             
             $collection = Collection::where('name',$data->collection_name)->get()->first();
 
@@ -153,13 +155,9 @@ class CardController extends Controller
 
             $cards = Card::where('name',$data->card_name)->get();
             
-            if (!$cards->isEmpty()){
+            if (!$cards->isEmpty()){              
 
-               
-
-                for ($i=0; $i <count($cards) ; $i++) {
-
-                   
+                for ($i=0; $i <count($cards) ; $i++) {                  
 
                     $response[$i] = [
                         "id" => $cards[$i]->id,
@@ -169,15 +167,13 @@ class CardController extends Controller
 
                     for ($j=0; $j < count($cards[$i]->collection); $j++) {
 
-                        //$response[$i][$j]["Collection name"] = $cards[$i]->collection[$j]->name;                    
+                        $response[$i][$j]["Collection name"] = $cards[$i]->collection[$j]->name;                    
                     }
                 }
-            }else{
-               
+            }else{               
                 $response = "No cards";
             }           
-        }else{
-            
+        }else{            
             $response = "No data";
         } 
         return response()->json($response);

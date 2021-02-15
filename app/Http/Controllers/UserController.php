@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use \Firebase\JWT\JWT;
+use App\Http\Helpers\MyJWT;
 
 class UserController extends Controller
 {
@@ -53,17 +55,19 @@ class UserController extends Controller
             $user =  User::where('username',$user_username)->get()->first();
             
             if ($user){
-                if (Hash::check($data->password, $user->password)) {
-                    $user->user_token = Str::random(30);
-                    try{
-                        $user->save();
-                        $response = "Login successful";    
-                    }catch(\Exception $e){
-                    $response = $e->getMessage();
-                    }                
-                }else{
-                   $response = "user or password incorrect";
-                }
+
+                $payload = MyJWT::generatePayload($user);
+                $key = MyJWT::getKey();
+
+                $jwt = JWT::encode($payload, $key);
+
+                    if (Hash::check($data->password, $user->password)) {
+                        $response = $jwt;                
+                    }else{
+                        $response = "user or password incorrect";
+                    }
+            }else{
+                $response = "User not found";
             }           
         }else{
             $response = "No valid data";
