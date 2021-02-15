@@ -64,7 +64,7 @@ class CollectionController extends Controller
         }
         return response()->json($response);
     }
-    
+
     public function Collection_update(Request $request, $id){
 
         $data = $request->getContent();
@@ -128,7 +128,5 @@ class CollectionController extends Controller
             $response = "No valid data";
         }
         return response()->json($response);
-    }
-
-    
+    }    
 }
