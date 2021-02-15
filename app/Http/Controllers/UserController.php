@@ -100,24 +100,4 @@ class UserController extends Controller
         }
         return response()->json($response);
     }
-    public function Set_admin(Request $request, $id){
-
-        $response="";
-        $user = User::find($id);
-
-        if ($user) {
-            $user->role = "admin";
-            try{
-                $user->save();
-                $response = "Admin assigned";
-
-            }catch(\Exception $e){
-                $response = $e->getMessage();
-            } 
-        }else{
-            $response = "No valid user";
-        }           
-    
-        return response()->json($response);
-    }
 }
