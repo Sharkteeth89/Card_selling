@@ -25,7 +25,7 @@ Route::prefix('card')->group(function (){
 
     Route::post('/create',[CardController::class, 'Create_card'])->middleware('check.admin');
     Route::post('/update/{id}',[CardController::class, 'Card_update'])->middleware('check.admin');;
-    Route::post('/list',[CardController::class, 'Card_list']);    
+    Route::get('/list',[CardController::class, 'Card_list']);    
     Route::get('/get/card/{id}',[CardController::class, 'get_card_by_ID']);    
     Route::post('/sell',[CardController::class, 'Sell_card'])->middleware('check.user');
     Route::post('/list/sale',[CardController::class, 'Cards_in_sale']);

@@ -5,6 +5,8 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use App\Models\User;
+use \Firebase\JWT\JWT;
+use App\Http\Helpers\MyJWT;
 
 
 class EnsureTokenIsValid
@@ -18,7 +20,6 @@ class EnsureTokenIsValid
      */
     public function handle(Request $request, Closure $next)
     {
-        define("ADMIN","Administrator");
         
         $key = MyJWT::getKey();
 
@@ -30,14 +31,13 @@ class EnsureTokenIsValid
                 $decoded = JWT::decode($headers['api_token'], $key, array('HS256'));
                 
                 if(isset($decoded->role)){
-                    if($decoded->role === ADMIN){
+                    if($decoded->role === "admin"){
                         return $next($request);
                     }else{
                         abort(403, "¡Usted no está permitido aquí!");
                     }
                 }else{
                     abort(403, "Token no válido");
-
                 }
             }else{
                 abort(403, "¡Token vacío!");

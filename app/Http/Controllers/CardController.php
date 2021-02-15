@@ -8,6 +8,8 @@ use App\Models\User;
 use App\Models\UserCard;
 use App\Models\Collection;
 use App\Models\CardCollection;
+use \Firebase\JWT\JWT;
+use App\Http\Helpers\MyJWT;
 
 class CardController extends Controller
 {
@@ -23,23 +25,28 @@ class CardController extends Controller
 		    $headers = getallheaders();
 		    $decoded = JWT::decode($headers['api_token'], $key, array('HS256'));
 
-            $response="";
-            $card = new Card();
-
-
-            $card->name = $data->card_name;
-            $card->description = $data->card_description;
-            $card->admin_id = $decoded->id;
-            
-            $collection = Collection::where('name',$data->collection_name)->get()->first();
-
-            try{
-                $card->save();
-                $response = "Card Created";               
-
-            }catch(\Exception $e){
-                $response = $e->getMessage();
+            if($decoded){
+                $response="";
+                $card = new Card();
+    
+                $card->name = $data->card_name;
+                $card->description = $data->card_description;
+                $card->admin_id = $decoded->id;
+                
+                //$collection = Collection::where('name',$data->collection_name)->get()->first();
+    
+                try{
+                    $card->save();
+                    $response = "Card Created";               
+    
+                }catch(\Exception $e){
+                    $response = $e->getMessage();
+                }  
+            }else{
+                $response = "No valid user";
             }
+            
+            /*
             $card_collection = new CardCollection();
 
             if (!$collection) {                    
@@ -69,7 +76,7 @@ class CardController extends Controller
                 $card_collection->card_id = $card->id;
                 $card_collection->collection_id = $collection->id;
                 $card_collection->save(); 
-            }            
+            }*/            
             
         }else{
             $response = "No valid data";
