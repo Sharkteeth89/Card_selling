@@ -114,6 +114,43 @@ class CardController extends Controller
 
         if (isset($data->card_name)) {                              
 
+            $cards = Card::all();
+            
+            if (!$cards->isEmpty()){              
+
+                for ($i=0; $i <count($cards) ; $i++) {                  
+
+                    $response[$i] = [
+                        "id" => $cards[$i]->id,
+                        "name" => $cards[$i]->name,
+                        "description" => $cards[$i]->description,				               				
+                    ];
+
+                    for ($j=0; $j < count($cards[$i]->collection); $j++) {
+
+                        $response[$i][$j]["Collection name"] = $cards[$i]->collection[$j]->name;                    
+                    }
+                }
+            }else{
+               
+                $response = "No cards";
+            }           
+        }else{
+            
+            $response = "No data";
+        } 
+        return response()->json($response);
+    }
+
+    public function Card_list_by_name(Request $request){
+        $data = $request->getContent();
+
+        $data = json_decode($data);
+
+        $response=[];  
+
+        if (isset($data->card_name)) {                              
+
             $cards = Card::where('name',$data->card_name)->get();
             
             if (!$cards->isEmpty()){
