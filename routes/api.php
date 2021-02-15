@@ -8,16 +8,6 @@ use App\Http\Controllers\CardController;
 use App\Http\Controllers\CollectionController;
 use App\Http\Middleware\EnsureTokenIsValid;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
@@ -28,9 +18,7 @@ Route::prefix('user')->group(function (){
 
     Route::post('/signup',[UserController::class, 'User_sign_up']);
     Route::post('/login',[UserController::class, 'User_log_in']);
-    Route::post('/password/reset',[UserController::class, 'Password_reset']);
-    Route::post('/admin/set/{id}',[UserController::class, 'Set_admin']);
-    
+    Route::post('/password/reset',[UserController::class, 'Password_reset']);    
 });
 
 Route::prefix('card')->group(function (){

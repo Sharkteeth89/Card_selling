@@ -99,7 +99,7 @@ class CardController extends Controller
                     $response = $e->getMessage();
                 } 
             }else{
-                $response = "No valid card";
+                $response = "Not a valid card";
             }           
         }else{
             $response = "No valid data";
@@ -112,35 +112,29 @@ class CardController extends Controller
 
         $data = json_decode($data);
 
-        $response=[];  
+        $response=[];                                      
 
-        if (isset($data->card_name)) {                              
+        $cards = Card::all();
+        
+        if (!$cards->isEmpty()){              
 
-            $cards = Card::all();
-            
-            if (!$cards->isEmpty()){              
+            for ($i=0; $i <count($cards) ; $i++) {                  
 
-                for ($i=0; $i <count($cards) ; $i++) {                  
+                $response[$i] = [
+                    "id" => $cards[$i]->id,
+                    "name" => $cards[$i]->name,
+                    "description" => $cards[$i]->description,				               				
+                ];
 
-                    $response[$i] = [
-                        "id" => $cards[$i]->id,
-                        "name" => $cards[$i]->name,
-                        "description" => $cards[$i]->description,				               				
-                    ];
+                for ($j=0; $j < count($cards[$i]->collection); $j++) {
 
-                    for ($j=0; $j < count($cards[$i]->collection); $j++) {
-
-                        $response[$i][$j]["Collection name"] = $cards[$i]->collection[$j]->name;                    
-                    }
+                    $response[$i][$j]["Collection name"] = $cards[$i]->collection[$j]->name;                    
                 }
-            }else{
-               
-                $response = "No cards";
-            }           
-        }else{
-            
-            $response = "No data";
-        } 
+            }
+        }else{            
+            $response = "No cards";
+        }           
+        
         return response()->json($response);
     }
 
@@ -197,8 +191,7 @@ class CardController extends Controller
     }
 
     public function Sell_card(Request $request){
-        
-        
+                
         $data = $request->getContent();
 
         $data = json_decode($data);
