@@ -83,7 +83,7 @@ class UserController extends Controller
                         if (Hash::check($data->password, $user->password)) {
                             $response = $jwt;                
                         }else{
-                            $response = "user or password incorrect";
+                            $response = "User or password incorrect";
                         }
                     }else{
                         $response = "User not found";
