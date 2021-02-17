@@ -21,9 +21,9 @@ class CardController extends Controller
 
         if ($data) {
 
-            if (isset($data->card_name) && isset($data->card_description) && isset($data->collection_name)) {
+            if (isset($data->card_name) && isset($data->card_description)/* && isset($data->collection_name)*/) {
                
-                if (!empty($data->card_name) && !empty($data->card_description && !empty($data->collection_name))){
+                if (!empty($data->card_name) && !empty($data->card_description/* && !empty($data->collection_name)*/)){
                     
                     $key = MyJWT::getKey();
                     $headers = getallheaders();
@@ -48,6 +48,7 @@ class CardController extends Controller
                             $response = $e->getMessage();
                         }
                         
+                        /*
                         $collection = Collection::where('name',$data->collection_name)->get()->first();
                         
                         
@@ -86,6 +87,7 @@ class CardController extends Controller
                             }
                             //Asigno la carta a la coleccion                             
                         }
+                        */
                     }else{
                         $response = "No valid user";
                     }  
