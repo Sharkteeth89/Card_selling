@@ -18,27 +18,42 @@ class UserController extends Controller
         $data = json_decode($data);
 
         if ($data) {
-            $response="";
-            $user = new User();
+            if (isset($data->username) && isset($data->email) && isset($data->password) && isset($data->role)) {
+                if (!empty($data->username) && !empty($data->email) && !empty($data->password) && !empty($data->role)) {
+                    $response="";
 
-            $user->username = $data->username;
-            $user->email = $data->email;
-            $user->password = Hash::make($data->password);            
+                    $searchForUsername = User::where('username', $data->username)->get()->first();
+                    $searchForEmail = User::where('email', $data->email)->get()->first();
 
-            if ($data->role != 'admin') {
-                $user->role = $data->role;
+                    if (!$searchForEmail && !$searchForUsername) {
+                        $user = new User();
 
-                try{
-                    $user->save();
-                    $response = "User Created now you need to log in";
-    
-                }catch(\Exception $e){
-                    $response = $e->getMessage();
+                        $user->username = $data->username;
+                        $user->email = $data->email;
+                        $user->password = Hash::make($data->password);            
+
+                        if ($data->role != 'admin') {
+                            $user->role = $data->role;
+
+                            try{
+                                $user->save();
+                                $response = "User Created now you need to log in";
+                
+                            }catch(\Exception $e){
+                                $response = $e->getMessage();
+                            }
+                        }else{
+                            $response = "No valid role";
+                        }
+                    }else{
+                        $response = "User already exists";
+                    }                    
+                }else{
+                    $response = "Empty data";
                 }
             }else{
-                $response = "Rol no válido";
-            }
-            
+                $response = "No valid data";
+            } 
         }else{
             $response = "No valid data";
         }
@@ -50,25 +65,35 @@ class UserController extends Controller
         $data = json_decode($data);
 
         if ($data) {
-            $response="";
-            $user_username = $data->username;
-            $user =  User::where('username',$user_username)->get()->first();
+
+            if (isset($data->username) && isset($data->password)) {
+                if (!empty($data->username) && !empty($data->password)) {
+                    $response="";
+
+                    $user_username = $data->username;
+                    $user =  User::where('username',$user_username)->get()->first();
             
-            if ($user){
+                    if ($user){
 
-                $payload = MyJWT::generatePayload($user);
-                $key = MyJWT::getKey();
+                        $payload = MyJWT::generatePayload($user);
+                        $key = MyJWT::getKey();
 
-                $jwt = JWT::encode($payload, $key);
+                        $jwt = JWT::encode($payload, $key);
 
-                    if (Hash::check($data->password, $user->password)) {
-                        $response = $jwt;                
+                        if (Hash::check($data->password, $user->password)) {
+                            $response = $jwt;                
+                        }else{
+                            $response = "user or password incorrect";
+                        }
                     }else{
-                        $response = "user or password incorrect";
+                        $response = "User not found";
                     }
+                }else{
+                    $response = "Empty data";
+                }
             }else{
-                $response = "User not found";
-            }           
+                $response = "No valid data";
+            }                       
         }else{
             $response = "No valid data";
         }
@@ -80,21 +105,29 @@ class UserController extends Controller
         $data = json_decode($data);
 
         if ($data) {
-            $response="";
-            $user =  User::where('email',$data->email)->get()->first();
+            if (isset($data->email)) {
+                if (!empty($data->email)) {
+                    $response="";
+                    $user =  User::where('email',$data->email)->get()->first();
             
-            if ($user){
-                $new_password = Str::random(10);                
-                $user->password = Hash::make($new_password);
-                try{
-                    $user->save();
-                    $response = "Your new password is: " . $new_password;    
-                }catch(\Exception $e){
-                    $response = $e->getMessage();
+                    if ($user){
+                        $new_password = Str::random(10);                
+                        $user->password = Hash::make($new_password);
+                        try{
+                            $user->save();
+                            $response = "Your new password is: " . $new_password;    
+                        }catch(\Exception $e){
+                            $response = $e->getMessage();
+                        }
+                    }else{
+                        $response = "Email not valid";
+                    }
+                }else{
+                    $response = "Empty data";
                 }
             }else{
-                $response = "Email not valid";
-            }           
+                $response = "No valid data";
+            }                       
         }else{
             $response = "No valid data";
         }

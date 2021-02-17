@@ -29,8 +29,6 @@ class EnsureUserIsNotAdmin
 
         if ($data) {
 
-            $user =  User::where('user_token',$data->user_token)->get()->first();
-
             if(array_key_exists('api_token', $headers)){
 
                 if(!empty($headers['api_token'])){
