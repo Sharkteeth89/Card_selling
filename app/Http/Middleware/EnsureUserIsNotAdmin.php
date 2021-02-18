@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use App\Models\User;
 use \Firebase\JWT\JWT;
-use App\Http\Helpers\MyJWT;
+use App\Http\Helpers\JWTtoken;
 
 class EnsureUserIsNotAdmin
 {
@@ -23,7 +23,7 @@ class EnsureUserIsNotAdmin
 
         $data = json_decode($data);
 
-        $key = MyJWT::getKey();
+        $key = JWTtoken::getKey();
 
         $headers = getallheaders();
 

@@ -8,7 +8,7 @@ use App\Models\Card;
 use App\Models\User;
 use App\Models\CardCollection;
 use \Firebase\JWT\JWT;
-use App\Http\Helpers\MyJWT;
+use App\Http\Helpers\JWTtoken;
 
 class CollectionController extends Controller
 {
@@ -23,7 +23,7 @@ class CollectionController extends Controller
                 if (!empty($data->collection_name) && !empty($data->symbol_image) && !empty($data->edition_date) && !empty($data->card_name) && !empty($data->card_description)) {
                     $response="";
 
-                    $key = MyJWT::getKey();
+                    $key = JWTtoken::getKey();
                     $headers = getallheaders();
                     $decoded = JWT::decode($headers['api_token'], $key, array('HS256'));
         

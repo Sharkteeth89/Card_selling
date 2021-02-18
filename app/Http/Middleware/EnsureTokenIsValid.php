@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use App\Models\User;
 use \Firebase\JWT\JWT;
-use App\Http\Helpers\MyJWT;
+use App\Http\Helpers\JWTtoken;
 
 
 class EnsureTokenIsValid
@@ -21,7 +21,7 @@ class EnsureTokenIsValid
     public function handle(Request $request, Closure $next)
     {
         
-        $key = MyJWT::getKey();
+        $key = JWTtoken::getKey();
 
         $headers = getallheaders();
 

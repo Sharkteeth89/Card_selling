@@ -3,7 +3,7 @@
 namespace App\Http\Helpers;
 use Firebase\JWT\JWT;
 
-class MyJWT{
+class JWTtoken{
 
     private const KEY = 'PvldlWfJym5O59v2nYmpeyU1xKY6fRXkdasda';
     

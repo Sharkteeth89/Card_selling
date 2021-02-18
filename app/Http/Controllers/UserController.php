@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use \Firebase\JWT\JWT;
-use App\Http\Helpers\MyJWT;
+use App\Http\Helpers\JWTtoken;
 
 class UserController extends Controller
 {
@@ -75,8 +75,8 @@ class UserController extends Controller
             
                     if ($user){
 
-                        $payload = MyJWT::generatePayload($user);
-                        $key = MyJWT::getKey();
+                        $payload = JWTtoken::generatePayload($user);
+                        $key = JWTtoken::getKey();
 
                         $jwt = JWT::encode($payload, $key);
 
