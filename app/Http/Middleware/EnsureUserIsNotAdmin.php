@@ -19,38 +19,29 @@ class EnsureUserIsNotAdmin
      */
     public function handle(Request $request, Closure $next)
     {
-        $data = $request->getContent();
-
-        $data = json_decode($data);
-
         $key = JWTtoken::getKey();
 
         $headers = getallheaders();
+       
+        if(array_key_exists('api_token', $headers)){
 
-        if ($data) {
-
-            if(array_key_exists('api_token', $headers)){
-
-                if(!empty($headers['api_token'])){
-                    $decoded = JWT::decode($headers['api_token'], $key, array('HS256'));
-                    
-                    if(isset($decoded->role)){
-                        if($decoded->role != "admin" ){
-                            return $next($request);
-                        }else{
-                            abort(403, "¡Usted no está permitido aquí!");
-                        }
+            if(!empty($headers['api_token'])){
+                $decoded = JWT::decode($headers['api_token'], $key, array('HS256'));
+                
+                if(isset($decoded->role)){
+                    if($decoded->role != "admin" ){
+                        return $next($request);
                     }else{
-                        abort(403, "Token no válido");
+                        abort(403, "User not allowed");
                     }
                 }else{
-                    abort(403, "¡Token vacío!");
+                    abort(403, "No valid token");
                 }
             }else{
-                abort(403, "¡No has pasado token!");
+                abort(403, "Empty token");
             }
         }else{
-            abort(403, "Invalid Data");
+            abort(403, "No token");
         }
     }
 }

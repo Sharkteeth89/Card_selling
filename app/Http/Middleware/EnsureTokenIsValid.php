@@ -19,8 +19,7 @@ class EnsureTokenIsValid
      * @return mixed
      */
     public function handle(Request $request, Closure $next)
-    {
-        
+    {        
         $key = JWTtoken::getKey();
 
         $headers = getallheaders();
@@ -34,16 +33,16 @@ class EnsureTokenIsValid
                     if($decoded->role === "admin"){
                         return $next($request);
                     }else{
-                        abort(403, "¡Usted no está permitido aquí!");
+                        abort(403, "User not allowed");
                     }
                 }else{
-                    abort(403, "Token no válido");
+                    abort(403, "No valid token");
                 }
             }else{
-                abort(403, "¡Token vacío!");
+                abort(403, "Empty token");
             }
         }else{
-            abort(403, "¡No has pasado token!");
+            abort(403, "No token");
         }
     }
 }
