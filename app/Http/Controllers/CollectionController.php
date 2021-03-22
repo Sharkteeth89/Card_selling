@@ -45,7 +45,7 @@ class CollectionController extends Controller
                             }catch(\Exception $e){
                                 $response = $e->getMessage();
                             }            
-                
+                            
                             //Creo la carta nueva a partir de los datos introducidos por el usuario
                             $new_card = new Card();
                             $new_card->name = $data->card_name;
